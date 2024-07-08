@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Todo list</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<script>
+    function confirmAction(event, message) {
+        if (!confirm(message)) {
+            event.preventDefault();
+        }
+    }
+</script>
+<body>
+<div class="container">
+    <h1 th:text="${header}">TODO LIST</h1>
+    <p th:text="${description}">Manage your works and tasks</p>
+    <div>
+        <form th:action="@{/todo}" method="post" th:object="${todo}">
+            <div class="input-group">
+                <input type="hidden" th:field="*{id}">
+                <input class="input" placeholder="Enter your task" th:field="*{todoTask}" />
+                <select class="status-select" th:field="*{status}">
+                    <option th:each="statusItem : ${statusList}" th:value="${statusItem}" th:text="${statusItem.status}"></option>
+                </select>
+                <button class="btn" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <ul>
+        <li th:each="todoItem : ${todos}">
+            <p class="todo-info" th:text="${todoItem.todoTask}"></p>
+            <div class="function-group-btn">
+                <select class="status-select" disabled>
+                    <option th:value="${todoItem.status}" th:text="${todoItem.status.status}"></option>
+                </select>
+                <a th:href="@{/todo/update/{id}(id=${todoItem.id})}" class="btn func-btn">Update</a>
+                <a th:href="@{/todo/delete/{id}(id=${todoItem.id})}"  onclick="confirmAction(event, 'Are you sure you want to delete this task?')"  class="btn func-btn" >Delete</a>
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
